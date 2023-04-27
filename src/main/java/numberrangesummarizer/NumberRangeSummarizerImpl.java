@@ -10,16 +10,27 @@ public class NumberRangeSummarizerImpl implements NumberRangeSummarizer {
         //split the input into an array of strings
         String[] stringArray = input.split(",");
 
-        //convert the strings into integers
+        //convert the strings into integers and drops non integer values
         for (String s : stringArray) {
             try {
                 numberList.add(Integer.parseInt(s));
             }catch (Exception e){
-                System.out.println("Failed to collect.\nCould not convert \""+s+"\" into an Integer");
+                System.out.println("Collection error." +
+                                 "\nCould not convert \"" + s + "\" into an Integer" +
+                                 "\nCollection may have missing values");
             }
         }
 
         return numberList;
+    }
+
+    //Formats negatives to have parenthesis around them for clarity
+    String formatNumber(int number){
+        if (number < 0){
+            return "(" + number + ")";
+        }else{
+            return String.valueOf(number);
+        }
     }
 
     //Assumes number ranges are always in ascending order
@@ -32,7 +43,7 @@ public class NumberRangeSummarizerImpl implements NumberRangeSummarizer {
 
         if (it.hasNext()) {                     //gets the first value in the collection
             nextValue = it.next();
-            output.append(nextValue);
+            output.append(formatNumber(nextValue));
             ++nextValue;
         }
 
@@ -45,13 +56,13 @@ public class NumberRangeSummarizerImpl implements NumberRangeSummarizer {
             } else {
                 if (range) {                    //closes up a range once we look at a number that is not also sequential
                     output.append('-');
-                    output.append(--nextValue); //decrement to get last in order number
+                    output.append(formatNumber(--nextValue)); //decrement to get last in order number
                     output.append(", ");
-                    output.append(tmp);
+                    output.append(formatNumber(tmp));
                     range = false;
                 } else {
                     output.append(", ");
-                    output.append(tmp);
+                    output.append(formatNumber(tmp));
                 }
                 nextValue = tmp + 1;            //init nextValue to look for next in order number
             }
@@ -59,7 +70,7 @@ public class NumberRangeSummarizerImpl implements NumberRangeSummarizer {
 
         if (range) {                            //closes up a range in case last numbers were sequential
             output.append('-');
-            output.append(--nextValue);         //decrement to get last in order number
+            output.append(formatNumber(--nextValue));         //decrement to get last in order number
         }
 
         return output.toString();

@@ -84,7 +84,7 @@ public class NumberRangeSummarizerImplTest {
     }
 
     @Test
-    public void testBadInput(){
+    public void testNonNumericInput(){
         String input = "6,7,8,6,K,8";
         String expectedOutput = "6-8, 6, 8";
 
@@ -94,7 +94,7 @@ public class NumberRangeSummarizerImplTest {
     @Test
     public void testNegatives(){
         String input = "-5,-4,-3,-1,0,2,5";
-        String expectedOutput = "-5--3, -1-0, 2, 5";
+        String expectedOutput = "(-5)-(-3), (-1)-0, 2, 5";
 
         verify(input,expectedOutput);
     }
