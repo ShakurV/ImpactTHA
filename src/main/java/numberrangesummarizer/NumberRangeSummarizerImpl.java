@@ -24,61 +24,31 @@ public class NumberRangeSummarizerImpl implements NumberRangeSummarizer {
         return numberList;
     }
 
-    //formats the symbols for the range then appends number to output
-    private void appendNumber(int number, boolean range, StringBuilder output){
-        if(range){
-            output.append('-');
-        }else{
-            output.append(", ");
-        }
-
-        output.append(formatNumber(number));
-    }
-
-    //Formats negatives to have parenthesis around them for clarity
-    private String formatNumber(int number){
-        if (number < 0){
-            return("(" + number + ")");
-        }else{
-            return String.valueOf(number);
-        }
-    }
-
     //Assumes number ranges are always in ascending order
     @Override
     public String summarizeCollection(Collection<Integer> input) {
-        int nextValue = 0;                      //denotes the next value we are looking for if it is sequential
-        boolean range = false;
-        StringBuilder output = new StringBuilder();
-        Iterator<Integer> it = input.iterator();
+        Iterator<Integer> inputItr = input.iterator();
+        List<NumberRange> numberRanges= new ArrayList<>();
 
-        if (it.hasNext()) {                     //gets the first value in the collection
-            nextValue = it.next();
-            output.append(formatNumber(nextValue));
-            ++nextValue;
+        //initializes the first numberRange
+        if(inputItr.hasNext()){
+            numberRanges.add(new NumberRange(inputItr.next()));
         }
 
-        while (it.hasNext()) {
-            int tmp = it.next();
+        //build the list of number ranges
+        while (inputItr.hasNext()){
+            int k = inputItr.next();
 
-            if (nextValue == tmp) {
-                range = true;                   //open a new range
-                ++nextValue;
-            } else {
-                if (range) {                    //closes up a range once we look at a number that is not also sequential
-                    appendNumber(--nextValue, range, output); //decrement to get last in order number
-                    range = false;
-                    appendNumber(tmp, range, output);
-
-                } else {
-                    appendNumber(tmp, range, output);
-                }
-                nextValue = tmp + 1;            //init nextValue to look for next in order number
+            //Creates new numberRange when number cannot be added to the last numberRange
+            if ( !numberRanges.get(numberRanges.size()-1).inRange(k)){
+                numberRanges.add(new NumberRange(k));
             }
         }
 
-        if (range) {                            //closes up a range in case last numbers were sequential
-            appendNumber(--nextValue, range, output);         //decrement to get last in order number
+        StringJoiner output = new StringJoiner(", ");
+
+        for (NumberRange numberRange : numberRanges) {
+            output.add(numberRange.getString());
         }
 
         return output.toString();
