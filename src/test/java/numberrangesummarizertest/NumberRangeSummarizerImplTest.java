@@ -8,6 +8,8 @@ import static org.junit.Assert.*;
 
 import java.util.Collection;
 
+//It is assumed that sequential order is only valid if the numbers are ascending
+
 public class NumberRangeSummarizerImplTest {
     private NumberRangeSummarizer numSum;
 

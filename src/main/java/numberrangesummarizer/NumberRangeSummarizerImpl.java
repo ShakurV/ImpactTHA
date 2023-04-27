@@ -24,10 +24,21 @@ public class NumberRangeSummarizerImpl implements NumberRangeSummarizer {
         return numberList;
     }
 
+    //formats the symbols for the range then appends number to output
+    private void appendNumber(int number, boolean range, StringBuilder output){
+        if(range){
+            output.append('-');
+        }else{
+            output.append(", ");
+        }
+
+        output.append(formatNumber(number));
+    }
+
     //Formats negatives to have parenthesis around them for clarity
-    String formatNumber(int number){
+    private String formatNumber(int number){
         if (number < 0){
-            return "(" + number + ")";
+            return("(" + number + ")");
         }else{
             return String.valueOf(number);
         }
@@ -55,22 +66,19 @@ public class NumberRangeSummarizerImpl implements NumberRangeSummarizer {
                 ++nextValue;
             } else {
                 if (range) {                    //closes up a range once we look at a number that is not also sequential
-                    output.append('-');
-                    output.append(formatNumber(--nextValue)); //decrement to get last in order number
-                    output.append(", ");
-                    output.append(formatNumber(tmp));
+                    appendNumber(--nextValue, range, output); //decrement to get last in order number
                     range = false;
+                    appendNumber(tmp, range, output);
+
                 } else {
-                    output.append(", ");
-                    output.append(formatNumber(tmp));
+                    appendNumber(tmp, range, output);
                 }
                 nextValue = tmp + 1;            //init nextValue to look for next in order number
             }
         }
 
         if (range) {                            //closes up a range in case last numbers were sequential
-            output.append('-');
-            output.append(formatNumber(--nextValue));         //decrement to get last in order number
+            appendNumber(--nextValue, range, output);         //decrement to get last in order number
         }
 
         return output.toString();
