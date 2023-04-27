@@ -1,3 +1,6 @@
+###JUnit###
+lib/junit-4.8.2.jar
+
 ### IntelliJ IDEA ###
 out/
 !**/src/main/**/out/
