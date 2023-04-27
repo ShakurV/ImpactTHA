@@ -1,9 +1,6 @@
 package numberrangesummarizer;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Arrays;
+import java.util.*;
 
 public class NumberRangeSummarizerImpl implements NumberRangeSummarizer{
     @Override
@@ -20,9 +17,43 @@ public class NumberRangeSummarizerImpl implements NumberRangeSummarizer{
 
         return numberList;
     }
-
+    //Assumes numbers are always in ascending order
     @Override
     public String summarizeCollection(Collection<Integer> input) {
-        return null;
+        int i;
+        boolean range = false;
+        StringBuilder output = new StringBuilder();
+        Iterator<Integer> it = input.iterator();
+
+        i = it.next();
+        output.append(i);
+        ++i;
+
+        while (it.hasNext()){
+            int tmp = it.next();
+            if(i == tmp){
+                range = true;           //open a new range
+                ++i;
+            }else{
+                if(range){              //closes up a range once we look at a number that is not also sequential
+                    output.append('-');
+                    output.append(--i); //decrement to get last in order number
+                    output.append(',');
+                    output.append(tmp);
+                    i = tmp + 1;        //init i to look for next in order number
+                    range = false;
+                }else{
+                    output.append(',');
+                    output.append(tmp);
+                }
+            }
+        }
+
+        if(range) {             //closes up a range in case last numbers were sequential
+            output.append('-');
+            output.append(--i); //decrement to get last in order number
+        }
+
+        return output.toString();
     }
 }
